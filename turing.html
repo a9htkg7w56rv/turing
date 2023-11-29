@@ -12,43 +12,34 @@
  </head>
 
  <body onload="OnLoad();">
-  <div id="Machine">
-   <div id="MachineTapeContainer">
-    <div class="BoxTitle">Tape</div>
-    <div id="MachineTape" class="MachineStatusBox" title="This is the Turing machine's tape. The head position is indicated by the highlighted cell and arrow.">
+
+  <div>Etat : <span id="MachineState">-</span></div>
+  <div id="MachineTapeContainer">
+    <div id="MachineTape" class="MachineStatusBox">
      <!-- the following pre elements must be on a single line with no whitespace between them !-->
-     <div id="RunningTapeDisplay" aria-live="polite"><div id="TapeValues"><pre id="LeftTape" class="tape"></pre><div id="ActiveTapeArea"><pre id="ActiveTape" class="tape"> </pre><div id="MachineHead"><div class="HeadTop"></div><div class="HeadBody">Head</div></div></div><pre id="RightTape" class="tape"></pre></div></div>
+     <div id="RunningTapeDisplay" aria-live="polite"><div id="TapeValues"><pre id="LeftTape" class="tape"></pre><div id="ActiveTapeArea"><pre id="ActiveTape" class="tape"> </pre><div id="MachineHead"><div class="HeadTop"></div><div class="HeadBody">&nbsp;</div></div></div><pre id="RightTape" class="tape"></pre></div></div>
     </div> <!-- div MachineTape !-->
    </div>
 
-   <div id="MachineMiddleSection">
-    <div id="MachineStatusMsgWrapper" aria-live="polite">
-      <pre id="MachineStatusMsgText">
-      </pre> <!-- div MachineStatusMsgText !-->
-      <div id="MachineStatusMsgBg"></div>
-    </div>
+  <div style="margin: 1em;">
+    Contenu initial : <input type="text" id="InitialInput" value="" onchange="ShowResetMsg(true);">
+    <button id="StepButton" onclick="StepButton();" title="Run the machine for a single step and the pause">Step</button>
+    <button id="ResetButton" onclick="ResetButton();" title="Reset the machine and tape to the initial state">Reset</button>
+    <button id="RunButton" onclick="RunButton();" title="Start the machine running">Run</button>
+    <button id="StopButton" onclick="StopButton();" disabled="disabled" title="Pause the machine when running">Pause</button>
+    <span id="MachineSteps"></span> transitions effectuées
+  </div>
 
-    <div id="MachineStateContainer" class="MachineStatusContainer" title="This is the Turing machine's current state" aria-live="polite">
-     <div class="BoxTitle">Current state</div>
-     <div id="MachineState" class="MachineStatusBox">
- - 
-     </div> <!-- div MachineState !-->
-    </div> <!-- div MachineStateContainer !-->
+  <div id="MachineStatusMsgText"></div><br/>
 
-    <div id="MachineStepsContainer" class="MachineStatusContainer" title="This is the number of steps executed by the machine since starting" aria-live="polite">
-     <div class="BoxTitle">Steps</div>
-     <div id="MachineSteps" class="MachineStatusBox">
- - 
-     </div> <!-- div MachineSteps !-->
-    </div> <!-- div MachineStepsContainer !-->
-   </div> <!-- div MachineMiddleSection !-->
+  <div id="Machine">
+
    <div class="cleardiv"></div>
 
    <div id="MachineLowerSection">
     <div id="MachineLowerSection2">
 
      <div id="MachineProgramContainer">
-      <div class="BoxTitle">Turing machine program</div>
       <div id="MachineProgramBlock">
        <div id="MachineProgramBlock2">
         <div id="SourceContainer">
@@ -56,7 +47,7 @@
          </div>
          <div id="tabackground">
 <!-- no indenting, because text inside textarea is verbatim !-->
-<textarea id="Source" wrap="off" oninput="TextareaChanged();" onscroll="UpdateTextareaScroll();" onblur="Compile();" title="This is the Turing machine's program. See documentation below for syntax.">
+<textarea id="Source" wrap="off" oninput="TextareaChanged();" onscroll="UpdateTextareaScroll();" onblur="Compile();">
 ; Load a program from the menu or write your own!
 </textarea>
          </div>
@@ -65,77 +56,6 @@
        </div> <!-- div MachineProgramBlock2 !-->
       </div> <!-- div MachineProgramBlock !-->
      </div> <!-- div MachineProgramContainer !--> 
-
-     <div id="MachineControlBlock">
-      <div class="BoxTitle">Controls</div>
-      <div id="MachineButtonsBlock">
-       <button id="RunButton" onclick="RunButton();" title="Start the machine running">Run</button> <!-- &#x25b8; !--> <!-- Unicode 'play' symbol !-->
-       <span title="If enabled, runs as fast as your browser &amp; computer allow">
-        <input type="checkbox" id="SpeedCheckbox" onclick="SpeedCheckbox();">Run at full speed
-       </span>
-       <br>
-       <button id="StopButton" onclick="StopButton();" disabled="disabled" title="Pause the machine when running">Pause</button><br> <!-- &#x25fe; !-->
-       <button id="UndoButton" onclick="Undo();" title="Undo one machine step" style="float: right;">Undo</button>
-       <button id="StepButton" onclick="StepButton();" title="Run the machine for a single step and the pause">Step</button><br> <!-- &#x25b8;&#x2759; !-->
-       <button id="ResetButton" onclick="ResetButton();" title="Reset the machine and tape to the initial state">Reset</button> <!-- &#x2759;&#x23ea; !-->
-       <div id="InitialTapeDisplay"  title="This initial data will be loaded on the tape when the machine starts">
-        Initial input:<input type="text" id="InitialInput" value="" onchange="ShowResetMsg(true);">
-       </div>
-       <div style="font-size: small;">
-        <a href="javascript:" onclick="$('#AdvancedOptions').slideToggle();" title="Show advanced machine options">Advanced options</a>
-       </div>
-       <div id="AdvancedOptions" style="display: none; margin-top: 0.25em;">
-        <div id="InitialStateDisplay"  title="This is the state that the machine will start in" style="margin-bottom: 0.5em;">
-         Initial state:<input type="text" id="InitialState" value="0" onchange="ShowResetMsg(true);">
-        </div>
-        <div title="Choose between different Turing machine variants">
-         Machine variant:
-         <select onchange="VariantChanged(true);" id="MachineVariant">
-          <option value="0" selected="selected">Standard</option>
-          <option value="1">Semi-infinite tape</option>
-          <option value="2">Non-deterministic</option>
-         </select>
-         <div id="MachineVariantDescription" style="font-size: small; font-style: italic;"></div>
-         <span style="font-size: x-small;"><a href="javascript:" onclick="$('#AdvancedOptions').hide();">[Close]</a></span>
-        </div>
-       </div> 
-       <div id="ResetMessage">Changes will take effect when the machine is reset.</div>
-       <br>
-       <br>
-       <div id="LoadBlock">
-        <a href="javascript:" onclick="$('#LoadMenu').slideToggle();" title="Load a pre-prepared example program">Load an example program</a>
-        <div id="LoadMenu">
-         <ul>
-          <li><a href="javascript:" onclick="LoadSampleProgram('palindrome', 'Palindrome detector');">Palindrome detector</a></li>
-          <li><a href="javascript:" onclick="LoadSampleProgram('binaryadd', 'Binary addition machine');">Binary addition</a></li>
-          <li><a href="javascript:" onclick="LoadSampleProgram('binarymult', 'Binary multiplication machine');">Binary multiplication</a></li>
-          <li><a href="javascript:" onclick="LoadSampleProgram('bin2dec', 'Binary to decimal conversion machine');">Binary to decimal conversion</a></li>
-          <li><a href="javascript:" onclick="LoadSampleProgram('turingsequence', 'Turing\'s sequence machine');">Turing's sequence machine</a></li>
-          <li><a href="javascript:" onclick="LoadSampleProgram('parentheses', 'Parentheses checker machine');">Parentheses checker</a></li>
-          <li><a href="javascript:" onclick="LoadSampleProgram('reversepolishboolean', 'Reverse Polish Boolean calculator');">Reverse Polish Boolean calculator</a></li>
-          <li><a href="javascript:" onclick="LoadSampleProgram('primetest', 'Primality test machine');">Primality test</a></li>
-          <li><a href="javascript:" onclick="LoadSampleProgram('4statebeaver', '4-state busy beaver');">4-state busy beaver</a></li>
-          <li><a href="javascript:" onclick="LoadSampleProgram('universal', 'Universal Turing machine');">Universal Turing machine</a></li>
-          <!--<li><a href="javascript:" onclick="LoadSampleProgram('error', 'Error machine');">Error</a></li>!--> <!-- for testing !-->
-         </ul>
-         <span style="font-size: x-small;"><a href="javascript:" onclick="$('#LoadMenu').hide();">[Close]</a></span>
-        </div>
-       </div> <!-- div inputProg !-->
-       <br>
-       <a href="javascript:" onclick="SaveToCloud();" title="Save your machine to the cloud for sharing or bookmarking">Save to the cloud</a>
-       <!--...<a href="javascript:" onclick="testsave(true);">test ok</a>...<a href="javascript:" onclick="testsave(false);">test error</a>!--> <!-- for testing !-->
-       <div id="SaveStatus">
-        <div id="SaveStatusFg">
-         <div id="SaveStatusMsg"></div>
-         <span style="font-size: x-small;"><a href="javascript:" onclick="ClearSaveMessage();">[Close]</a></span>
-        </div> 
-        <div id="SaveStatusBg"></div>
-       </div>
-       <!--<br><button id="DebugButton" onclick="x();">Debug</button><br>!-->
-      </div> <!-- div MachineButtonsBlock !-->
-     </div> <!-- div MachineControlBlock !-->
-
-
     </div> <!-- div MachineLowerSection2 !-->
    </div> <!-- div MachineLowerSection !-->
 
@@ -145,5 +65,68 @@
    <pre id="debug">
    </pre> <!-- div debug !-->
   </div> <!-- div debugOuter !-->
+
+  <div id="MachineControlBlock" style="display: none;">
+    <div id="MachineButtonsBlock">
+     <span title="If enabled, runs as fast as your browser &amp; computer allow">
+      <input type="checkbox" id="SpeedCheckbox" onclick="SpeedCheckbox();">Run at full speed
+     </span>
+     <br>
+     <button id="UndoButton" onclick="Undo();" title="Undo one machine step" style="float: right;">Undo</button>
+
+     <div style="font-size: small;">
+      <a href="javascript:" onclick="$('#AdvancedOptions').slideToggle();" title="Show advanced machine options">Advanced options</a>
+     </div>
+     <div id="AdvancedOptions" style="display: none; margin-top: 0.25em;">
+      <div id="InitialStateDisplay"  title="This is the state that the machine will start in" style="margin-bottom: 0.5em;">
+       Initial state:<input type="text" id="InitialState" value="0" onchange="ShowResetMsg(true);">
+      </div>
+      <div title="Choose between different Turing machine variants">
+       Machine variant:
+       <select onchange="VariantChanged(true);" id="MachineVariant">
+        <option value="0" selected="selected">Standard</option>
+        <option value="1">Semi-infinite tape</option>
+        <option value="2">Non-deterministic</option>
+       </select>
+       <div id="MachineVariantDescription" style="font-size: small; font-style: italic;"></div>
+       <span style="font-size: x-small;"><a href="javascript:" onclick="$('#AdvancedOptions').hide();">[Close]</a></span>
+      </div>
+     </div> 
+     <div id="ResetMessage">Changes will take effect when the machine is reset.</div>
+     <br>
+     <br>
+     <div id="LoadBlock">
+      <a href="javascript:" onclick="$('#LoadMenu').slideToggle();" title="Load a pre-prepared example program">Load an example program</a>
+      <div id="LoadMenu">
+       <ul>
+        <li><a href="javascript:" onclick="LoadSampleProgram('palindrome', 'Palindrome detector');">Palindrome detector</a></li>
+        <li><a href="javascript:" onclick="LoadSampleProgram('binaryadd', 'Binary addition machine');">Binary addition</a></li>
+        <li><a href="javascript:" onclick="LoadSampleProgram('binarymult', 'Binary multiplication machine');">Binary multiplication</a></li>
+        <li><a href="javascript:" onclick="LoadSampleProgram('bin2dec', 'Binary to decimal conversion machine');">Binary to decimal conversion</a></li>
+        <li><a href="javascript:" onclick="LoadSampleProgram('turingsequence', 'Turing\'s sequence machine');">Turing's sequence machine</a></li>
+        <li><a href="javascript:" onclick="LoadSampleProgram('parentheses', 'Parentheses checker machine');">Parentheses checker</a></li>
+        <li><a href="javascript:" onclick="LoadSampleProgram('reversepolishboolean', 'Reverse Polish Boolean calculator');">Reverse Polish Boolean calculator</a></li>
+        <li><a href="javascript:" onclick="LoadSampleProgram('primetest', 'Primality test machine');">Primality test</a></li>
+        <li><a href="javascript:" onclick="LoadSampleProgram('4statebeaver', '4-state busy beaver');">4-state busy beaver</a></li>
+        <li><a href="javascript:" onclick="LoadSampleProgram('universal', 'Universal Turing machine');">Universal Turing machine</a></li>
+        <!--<li><a href="javascript:" onclick="LoadSampleProgram('error', 'Error machine');">Error</a></li>!--> <!-- for testing !-->
+       </ul>
+       <span style="font-size: x-small;"><a href="javascript:" onclick="$('#LoadMenu').hide();">[Close]</a></span>
+      </div>
+     </div> <!-- div inputProg !-->
+     <br>
+     <a href="javascript:" onclick="SaveToCloud();" title="Save your machine to the cloud for sharing or bookmarking">Save to the cloud</a>
+     <!--...<a href="javascript:" onclick="testsave(true);">test ok</a>...<a href="javascript:" onclick="testsave(false);">test error</a>!--> <!-- for testing !-->
+     <div id="SaveStatus">
+      <div id="SaveStatusFg">
+       <div id="SaveStatusMsg"></div>
+       <span style="font-size: x-small;"><a href="javascript:" onclick="ClearSaveMessage();">[Close]</a></span>
+      </div> 
+      <div id="SaveStatusBg"></div>
+     </div>
+     <!--<br><button id="DebugButton" onclick="x();">Debug</button><br>!-->
+    </div> <!-- div MachineButtonsBlock !-->
+   </div> <!-- div MachineControlBlock !-->
+
  </body>
 </html>
