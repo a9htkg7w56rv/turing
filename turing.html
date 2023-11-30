@@ -48,7 +48,12 @@
          <div id="tabackground">
 <!-- no indenting, because text inside textarea is verbatim !-->
 <textarea id="Source" wrap="off" oninput="TextareaChanged();" onscroll="UpdateTextareaScroll();" onblur="Compile();">
-; Load a program from the menu or write your own!
+; état  /  symbole  /  nouv. symbole  /  déplacement : L ou R  / nouv. état
+; symbole de ruban vide : _
+0 a b R 1
+1 a c R 0
+0 _ d L 2
+1 _ d L 2
 </textarea>
          </div>
         </div>

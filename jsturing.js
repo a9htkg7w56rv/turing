@@ -87,7 +87,7 @@ function Step()
 	} else {
 		/* No matching rule found; halt */
 		debug( 1, "Warning: no instruction found for state '" + sState + "' symbol '" + sHeadSymbol + "'; halting" );
-		SetStatusMessage( "Halted. No rule for state '" + sState + "' and symbol '" + sHeadSymbol + "'.", 2 );
+		SetStatusMessage( "Machine arrêtée. Pas de transition depuis l'état " + sState + " avec le symbole '" + sHeadSymbol + "'.", 2 );
 		sNewState = "halt";
 		sNewSymbol = sHeadSymbol;
 		nAction = 0;
@@ -665,7 +665,7 @@ function StopButton()
 
 function ResetButton()
 {
-	SetStatusMessage( "Machine reset. Click 'Run' or 'Step' to start." );
+	SetStatusMessage( "Machine remise à zero." );
 	Reset();
 	EnableControls( true, true, false, true, true, true, false );
 }
@@ -949,31 +949,16 @@ function AboutMenuClicked( name )
 	$("#AboutContent" + name ).stop().detach().prependTo("#AboutContentContainer").fadeIn({queue: false, duration: 150}).css("display", "none").slideDown(150);
 }
 
-
 /* OnLoad function for HTML body.  Initialise things when page is loaded. */
 function OnLoad()
 {
 	if( nDebugLevel > 0 ) $(".DebugClass").toggle( true );
-	
-	if( typeof( isOldIE ) != "undefined" ) {
-		debug( 1, "Old version of IE detected, adding extra textarea events" );
-		/* Old versions of IE need onkeypress event for textarea as well as onchange */
-		$("#Source").on( "keypress change", TextareaChanged );
-	}
 
 	oTextarea = $("#Source")[0];
 	TextareaChanged();
 	
 	VariantChanged(false); /* Set up variant description */
 	
-	if( window.location.search != "" ) {
-		SetStatusMessage( "Loading saved machine..." );
-		LoadFromCloud( window.location.search.substring( 1 ) );
-		window.history.replaceState( null, "", window.location.pathname );  /* Remove query string from URL */
-	} else {
-		LoadSampleProgram( 'palindrome', 'Default program', true );
-		SetStatusMessage( 'Load or write a Turing machine program and click Run!' );
-	}
 }
 
 
